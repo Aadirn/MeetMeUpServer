@@ -28,6 +28,7 @@ public class ServerFrame extends javax.swing.JFrame {
     public ServerFrame() {
         initComponents();
         centrar();
+        System.out.println("Bla Bla");
         btnIniciarServidor.setEnabled(true);
         btnPararServidor.setEnabled(false);
         status = new Color(255, 0, 0);
