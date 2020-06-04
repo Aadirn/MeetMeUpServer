@@ -29,10 +29,12 @@ public class CreaUsuarios implements CreaUsuariosI {
     private Calendar fechaCreacion;
     private Calendar fechaNacimiento;
     private String usuariosSeguidos;
+    private int numUsuariosSeguidos;
     private String contrasena;
     private float valoracion;
     private int vecesValorado;
     private int totalValoraciones;
+    private String biografia;
     private UsuarioNoThread u = new UsuarioNoThread();
 
     @Override
@@ -48,7 +50,7 @@ public class CreaUsuarios implements CreaUsuariosI {
         apellido1 = datosUsuario[3];
         apellido2 = datosUsuario[4];
         fechaNacimiento = u.fechaACAlendarCorrecta(datosUsuario[5]);
-        if(comprobarUsuarioRepetido(nickname)){
+        if (comprobarUsuarioRepetido(nickname)) {
             return null;
         }
 
@@ -59,19 +61,28 @@ public class CreaUsuarios implements CreaUsuariosI {
 
     @Override
     public UsuarioNoThread actualizarToObj(String comando) {
-        //nick_usuario+, nombre_usuario+ "', apellido1_usuario "', apellido2_usuario='"', fecha_nacimiento_usuario=', valoraciones='" + "', veces_valorado='" ++ "', valoracion_total='
-        String[] datosUsuario = new String[7];
+        //nick_usuario+, nombre_usuario+ "', apellido1_usuario "', apellido2_usuario='"', fecha_nacimiento_usuario=',asdasdasd ,valoraciones='" + "', veces_valorado='" ++ "', valoracion_total='
+        System.out.println("ActualizarToObj==>"+comando);
+        String[] datosUsuario;
         datosUsuario = comando.split("#");
-        nickname = datosUsuario[0];
-        nombre = datosUsuario[1];
-        apellido1 = datosUsuario[2];
-        apellido2 = datosUsuario[3];
-        fechaNacimiento = u.fechaACAlendarCorrecta(datosUsuario[4]);
-        valoracion = Float.parseFloat(datosUsuario[5]);
-        vecesValorado = Integer.parseInt(datosUsuario[6]);
-        totalValoraciones = Integer.parseInt(datosUsuario[7]);
+        id = Integer.parseInt(datosUsuario[0]);
+        nickname = datosUsuario[1];
+        nombre = datosUsuario[2];
+        apellido1 = datosUsuario[3];
+        apellido2 = datosUsuario[4];
+        fechaCreacion = u.fechaACAlendarCorrecta(datosUsuario[5]);
+        fechaNacimiento = u.fechaACAlendarCorrecta(datosUsuario[6]);
+        usuariosSeguidos = datosUsuario[7];
+        numUsuariosSeguidos = Integer.parseInt(datosUsuario[8]);
+        contrasena = datosUsuario[9];
+        valoracion = Float.parseFloat(datosUsuario[10]);
+        vecesValorado = Integer.parseInt(datosUsuario[11]);
+        totalValoraciones = Integer.parseInt(datosUsuario[12]);
+        biografia = datosUsuario[13];
+        System.out.println("ActualizarToObj==>"+biografia);
 
-        UsuarioNoThread user = new UsuarioNoThread(nickname, nombre, apellido1, apellido2, fechaNacimiento, usuariosSeguidos, valoracion, vecesValorado, totalValoraciones);
+        UsuarioNoThread user = new UsuarioNoThread(nickname, nombre, apellido1, apellido2, fechaNacimiento, usuariosSeguidos, numUsuariosSeguidos, valoracion, vecesValorado, totalValoraciones, biografia);
+        user.setId(id);
         return user;
 
     }
@@ -83,15 +94,14 @@ public class CreaUsuarios implements CreaUsuariosI {
             Statement stm = conn.createStatement();
             ResultSet rs = stm.executeQuery(sql);
             while (rs.next()) {
-                String nickComprobar=rs.getString("nick_usuario");
-                
-                if(nicknameLocal.equals(nickComprobar)){
+                String nickComprobar = rs.getString("nick_usuario");
+
+                if (nicknameLocal.equals(nickComprobar)) {
                     System.out.println("Nicks iguales");
                     return true;
                 }
             }
-            
-            
+
         } catch (SQLException ex) {
             Logger.getLogger(CreaUsuarios.class.getName()).log(Level.SEVERE, null, ex);
         }

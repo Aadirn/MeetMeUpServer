@@ -26,24 +26,24 @@ public class ControllerUsuario {
         UsuarioICrud dao = new UsuarioDaoImp();
         CreaUsuariosI crear = new CreaUsuarios();
         user = crear.registrarToObj(cadenaInfoRegistrar);
-        if(user==null){
+        if (user == null) {
             return "false";
         }
         login = dao.registrar(user);
         if (login) {//Si es true se ha logeado correctamente
-            return "true#"+user.getNickname();
+            return "true#" + user.getNickname();
         } else {
             return "false";
         }
 
     }
 
-    public void actualizar(String cadenaInfoActualizar) {
+    public boolean actualizar(String cadenaInfoActualizar) {
         user = new UsuarioNoThread();
         UsuarioICrud dao = new UsuarioDaoImp();
         CreaUsuariosI crear = new CreaUsuarios();
         user = crear.actualizarToObj(cadenaInfoActualizar);
-        dao.actualizar(user);
+        return dao.actualizar(user);
     }
 
     public void eliminar(int idUsuarioDelete) {

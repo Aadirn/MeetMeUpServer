@@ -54,10 +54,12 @@ public class Usuario {
     private static Calendar fechaCreacion;
     private static Calendar fechaNacimiento;
     private static String usuariosSeguidos;
+    private static int numUsuariosSeguidos;
     private static String contrasena;
     private static float valoracion;
     private static int vecesValorado;
     private static int totalValoraciones;
+    private static String biografia;
 
 //    @Override
 //    public void run() {
@@ -146,7 +148,7 @@ public class Usuario {
     }
 
     //USUARIO COMPLETO v
-    public static Usuario init(int id, String nickname, String nombre, String apellido1, String apellido2, Calendar fechaCreacion, Calendar fechaNacimiento, String usuariosSeguidos, String contrasena, float valoracion, int valoracionTotal, int totalValoraciones) {
+    public static Usuario init(int id, String nickname, String nombre, String apellido1, String apellido2, Calendar fechaCreacion, Calendar fechaNacimiento, String usuariosSeguidos, int numUsuariosSeguidos, String contrasena, float valoracion, int valoracionTotal, int totalValoraciones, String biografia) {
         instancia.id = id;
         instancia.nickname = nickname;
         instancia.nombre = nombre;
@@ -155,10 +157,12 @@ public class Usuario {
         instancia.fechaCreacion = fechaCreacion;
         instancia.fechaNacimiento = fechaNacimiento;
         instancia.usuariosSeguidos = usuariosSeguidos;
+        instancia.numUsuariosSeguidos = numUsuariosSeguidos;
         instancia.contrasena = contrasena;
         instancia.valoracion = valoracion;
         instancia.vecesValorado = valoracionTotal;
         instancia.totalValoraciones = totalValoraciones;
+        instancia.biografia = biografia;
         return instancia;
     }
 
@@ -184,17 +188,35 @@ public class Usuario {
     }
 
     //USUARIO INFORMACION v
-    public static Usuario init(String nickname, String nombre, String apellido1, String apellido2, Calendar fechaNacimiento, String usuariosSeguidos, float valoracion, int vecesValorado, int totalValoraciones) {
+    public static Usuario init(String nickname, String nombre, String apellido1, String apellido2, Calendar fechaNacimiento, String usuariosSeguidos, int numUsuariosSeguidos, float valoracion, int vecesValorado, int totalValoraciones, String biografia) {
         instancia.nickname = nickname;
         instancia.nombre = nombre;
         instancia.apellido1 = apellido1;
         instancia.apellido2 = apellido2;
         instancia.fechaNacimiento = fechaNacimiento;
         instancia.usuariosSeguidos = usuariosSeguidos;
+        instancia.numUsuariosSeguidos = numUsuariosSeguidos;
         instancia.valoracion = valoracion;
         instancia.vecesValorado = vecesValorado;
         instancia.totalValoraciones = totalValoraciones;
+        instancia.biografia = biografia;
         return instancia;
+    }
+
+    public static int getNumUsuariosSeguidos() {
+        return numUsuariosSeguidos;
+    }
+
+    public static void setNumUsuariosSeguidos(int numUsuariosSeguidos) {
+        Usuario.numUsuariosSeguidos = numUsuariosSeguidos;
+    }
+
+    public static String getBiografia() {
+        return biografia;
+    }
+
+    public static void setBiografia(String biografia) {
+        Usuario.biografia = biografia;
     }
 
     public int getVecesValorado() {
@@ -355,7 +377,7 @@ public class Usuario {
     }
 
     public String toStringCompleto() {
-        return id + "&" + nickname + "&" + nombre + "&" + apellido1 + "&" + apellido2 + "&" + fechaAStringCorrecta(fechaCreacion) + "&" + fechaAStringCorrecta(fechaNacimiento) + "&" + usuariosSeguidos + "&" + contrasena + "&" + valoracion + "&" + vecesValorado + "&" + totalValoraciones;
+        return id + "&" + nickname + "&" + nombre + "&" + apellido1 + "&" + apellido2 + "&" + fechaAStringCorrecta(fechaCreacion) + "&" + fechaAStringCorrecta(fechaNacimiento) + "&" + usuariosSeguidos + "&" + numUsuariosSeguidos + "&" + contrasena + "&" + valoracion + "&" + vecesValorado + "&" + totalValoraciones + "&" + biografia;
     }
 
     public String toStringsSoloId() {
@@ -380,7 +402,6 @@ public class Usuario {
 //                break;
 //        }
 //    }
-
 //    private void respuestaLogin(String respuesta, String info) {
 //        System.out.println(info);
 //
@@ -397,7 +418,6 @@ public class Usuario {
 //                break;
 //        }
 //    }
-
 //    private Usuario creaUsuarioLogin(String info) {
 //        String[] separa = info.split("%");
 //        //id + "%" + nickComprobar + "%" + 
@@ -406,5 +426,4 @@ public class Usuario {
 //        //vecesValorado + "%" + valoracionTotal
 //
 //    }
-
 }

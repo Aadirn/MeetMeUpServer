@@ -112,12 +112,16 @@ public class UsuarioDaoImp implements UsuarioICrud {
     @Override
     public boolean actualizar(UsuarioNoThread u) {
         Statement stm = null;
+        
+        System.out.println("Dentro de UsuarioDaoImp==>"+ u.getBiografia());
+        System.out.println("Dentro de UsuarioDaoImp==>"+ u.getIdUsuario());
 
         boolean actualizar = false;
         //nick_usuario,nombre_usuario,apellido1_usuario,apellido2_usuario,fecha_creacion_usuario,fecha_nacimiento_usuario,usuarios_seguidos
         String fechaUsuario = u.fechaAStringCorrecta(u.getFechaNacimiento());
 
-        String sql = "UPDATE usuarios SET nick_usuario='" + u.getNickname() + "', nombre_usuario='" + u.getNombre() + "', apellido1_usuario='" + u.getApellido1() + "', apellido2_usuario='" + u.getApellido2() + "', fecha_nacimiento_usuario='" + fechaUsuario + "', valoraciones='" + u.getValoracion() + "', veces_valorado='" + u.getVecesValorado() + "', valoracion_total='" + u.getTotalValoraciones() + "'" + " WHERE ID=" + u.getIdUsuario();
+        String sql = "UPDATE usuarios SET nick_usuario='" + u.getNickname() + "', nombre_usuario='" + u.getNombre() + "', apellido1_usuario='" + u.getApellido1() + "', apellido2_usuario='" + u.getApellido2() + "', fecha_nacimiento_usuario='" + fechaUsuario
+                + "', usuarios_seguidos='" + u.getUsuariosSeguidos() + "', num_usuarios_seguidos=" + u.getNumUsuariosSeguidos() + ", valoracion_total=" + u.getTotalValoraciones() + ", veces_valorado=" + u.getVecesValorado() + ", biografia='" + u.getBiografia() + "'" + " WHERE id_usuario=" + u.getIdUsuario() + ";";
         try {
             initDb();
             stm = conn.createStatement();
@@ -126,7 +130,7 @@ public class UsuarioDaoImp implements UsuarioICrud {
             conn.close();
             stm.close();
         } catch (SQLException e) {
-            System.out.println("Error: Clase ClienteDaoImple, método actualizar");
+            System.out.println("Error: Clase ClienteDaoImple, método actualizar" + e.getMessage());
         }
         return actualizar;
     }

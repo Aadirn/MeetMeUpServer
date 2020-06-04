@@ -47,10 +47,12 @@ public class UsuarioNoThread {
     private Calendar fechaCreacion;
     private Calendar fechaNacimiento;
     private String usuariosSeguidos;
+    private int numUsuariosSeguidos;
     private String contrasena;
     private float valoracion;
     private int vecesValorado;
     private int totalValoraciones;
+    private String biografia;
 
 //    @Override
 //    public void run() {
@@ -74,6 +76,24 @@ public class UsuarioNoThread {
 //            }
 //        } while (!finalizar);
 //    }
+
+    public int getNumUsuariosSeguidos() {
+        return numUsuariosSeguidos;
+    }
+
+    public void setNumUsuariosSeguidos(int numUsuariosSeguidos) {
+        this.numUsuariosSeguidos = numUsuariosSeguidos;
+    }
+
+    public String getBiografia() {
+        return biografia;
+    }
+
+    public void setBiografia(String biografia) {
+        this.biografia = biografia;
+    }
+    
+    
     public Component getCmpt() {
         return cmpt;
     }
@@ -139,7 +159,7 @@ public class UsuarioNoThread {
     }
 
     //USUARIO COMPLETO v
-    public UsuarioNoThread(int id, String nickname, String nombre, String apellido1, String apellido2, Calendar fechaCreacion, Calendar fechaNacimiento, String usuariosSeguidos, String contrasena, float valoracion, int valoracionTotal, int totalValoraciones) {
+    public UsuarioNoThread(int id, String nickname, String nombre, String apellido1, String apellido2, Calendar fechaCreacion, Calendar fechaNacimiento, String usuariosSeguidos,int numUsuariosSeguidos, String contrasena, float valoracion, int valoracionTotal, int totalValoraciones,String biografia) {
         this.id = id;
         this.nickname = nickname;
         this.nombre = nombre;
@@ -148,10 +168,12 @@ public class UsuarioNoThread {
         this.fechaCreacion = fechaCreacion;
         this.fechaNacimiento = fechaNacimiento;
         this.usuariosSeguidos = usuariosSeguidos;
+        this.numUsuariosSeguidos=numUsuariosSeguidos;
         this.contrasena = contrasena;
         this.valoracion = valoracion;
         this.vecesValorado = valoracionTotal;
         this.totalValoraciones = totalValoraciones;
+        this.biografia = biografia;
     }
 
     //(TEMPORAL)Igual no temporal y esto es visualizacion reducida v
@@ -174,16 +196,18 @@ public class UsuarioNoThread {
     }
 
     //USUARIO INFORMACION v
-    public UsuarioNoThread(String nickname, String nombre, String apellido1, String apellido2, Calendar fechaNacimiento, String usuariosSeguidos, float valoracion, int vecesValorado, int totalValoraciones) {
+    public UsuarioNoThread(String nickname, String nombre, String apellido1, String apellido2, Calendar fechaNacimiento, String usuariosSeguidos,int numUsuariosSeguidos, float valoracion, int vecesValorado, int totalValoraciones,String biografia) {
         this.nickname = nickname;
         this.nombre = nombre;
         this.apellido1 = apellido1;
         this.apellido2 = apellido2;
         this.fechaNacimiento = fechaNacimiento;
         this.usuariosSeguidos = usuariosSeguidos;
+        this.numUsuariosSeguidos = numUsuariosSeguidos;
         this.valoracion = valoracion;
         this.vecesValorado = vecesValorado;
         this.totalValoraciones = totalValoraciones;
+        this.biografia=biografia;
     }
 
     public int getVecesValorado() {
@@ -344,7 +368,7 @@ public class UsuarioNoThread {
     }
 
     public String toStringCompleto() {
-        return id + "&" + nickname + "&" + nombre + "&" + apellido1 + "&" + apellido2 + "&" + fechaAStringCorrecta(fechaCreacion) + "&" + fechaAStringCorrecta(fechaNacimiento) + "&" + usuariosSeguidos + "&" + contrasena + "&" + valoracion + "&" + vecesValorado + "&" + totalValoraciones;
+        return id + "&" + nickname + "&" + nombre + "&" + apellido1 + "&" + apellido2 + "&" + fechaAStringCorrecta(fechaCreacion) + "&" + fechaAStringCorrecta(fechaNacimiento) + "&" + usuariosSeguidos + "&" + contrasena + "&" + valoracion + "&" + vecesValorado + "&" + totalValoraciones+ "&" +biografia;
     }
 
     public String toStringsSoloId() {

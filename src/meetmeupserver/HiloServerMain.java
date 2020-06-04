@@ -152,6 +152,10 @@ public class HiloServerMain extends Thread {
             case "crear":
                 System.out.println("Dentro crear");
                 crear(comandoTroceado[1]);
+                break;
+            case "actualiza":
+                actualiza(comandoTroceado[1]);
+                break;
             //AQUI SEGURAMENTE AÑADIR MÁS
 
             default:
@@ -174,11 +178,13 @@ public class HiloServerMain extends Thread {
         String fechaCreacion;
         String fechaNacimiento;
         String usuariosSegidos;
+        String numUsuariosSeguidos;
         String valoracionTotal;
         String vecesValorado;
         String valoracion;
+        String biografia;
 
-        String sql = "SELECT id_usuario,nick_usuario,AES_DECRYPT(password_usuario, 'admin'),nombre_usuario, apellido1_usuario, apellido2_usuario, fecha_creacion_usuario,fecha_nacimiento_usuario,usuarios_seguidos, valoracion_total, veces_valorado from usuarios WHERE nick_usuario='" + nick + "'";
+        String sql = "SELECT id_usuario,nick_usuario,AES_DECRYPT(password_usuario, 'admin'),nombre_usuario, apellido1_usuario, apellido2_usuario, fecha_creacion_usuario,fecha_nacimiento_usuario,usuarios_seguidos,num_usuarios_seguidos, valoracion_total, veces_valorado,biografia from usuarios WHERE nick_usuario='" + nick + "'";
         try {
 
             initDb();
@@ -199,9 +205,11 @@ public class HiloServerMain extends Thread {
                     fechaCreacion = rs.getString("fecha_creacion_usuario");
                     fechaNacimiento = rs.getString("fecha_nacimiento_usuario");
                     usuariosSegidos = rs.getString("usuarios_seguidos");
+                    numUsuariosSeguidos = rs.getString("num_usuarios_seguidos");
                     valoracionTotal = compruebaSiNull(rs.getString("valoracion_total"));
                     vecesValorado = compruebaSiNull(rs.getString("veces_valorado"));
                     valoracion = calcularValoracion(valoracionTotal, vecesValorado);
+                    biografia = rs.getString("biografia");
 
                     if (!pass.equals(passComprobar)) {
                         System.out.println("Login fallido no coincide la contraseña\n");
@@ -211,7 +219,7 @@ public class HiloServerMain extends Thread {
                     }
 
                     //PONER EN LA SALIDA TODO LOS DATOS DEL COMPA
-                    String respuesta = id + "%" + nickComprobar + "%" + passComprobar + "%" + nombre + "%" + apellido1 + "%" + apellido2 + "%" + fechaCreacion + "%" + fechaNacimiento + "%" + usuariosSegidos + "%" + valoracion + "%" + vecesValorado + "%" + valoracionTotal;
+                    String respuesta = id + "%" + nickComprobar + "%" + passComprobar + "%" + nombre + "%" + apellido1 + "%" + apellido2 + "%" + fechaCreacion + "%" + fechaNacimiento + "%" + usuariosSegidos + "%" + numUsuariosSeguidos + "%" + valoracion + "%" + vecesValorado + "%" + valoracionTotal + "%" + biografia;
                     salidaRespuesta.print("login#true#" + respuesta + "\r\n");
                     salidaRespuesta.flush();
                     conn.close();
@@ -291,6 +299,12 @@ public class HiloServerMain extends Thread {
             Logger.getLogger(HiloServerMain.class.getName()).log(Level.SEVERE, null, ex);
         }
         return id;
+    }
+
+    private void actualiza(String usuario) {
+        System.out.println("Dentro de actualiza==>"+usuario);
+        ControllerUsuario cntr = new ControllerUsuario();
+        cntr.actualizar(usuario);
     }
 
 }
