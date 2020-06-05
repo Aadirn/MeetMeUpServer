@@ -6,6 +6,7 @@
 package meetmeupserver;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.logging.Level;
@@ -27,6 +28,7 @@ public class HiloConexion extends Thread {
     private static final HiloConexion instancia = new HiloConexion();
     private String puerto33;
     private String puerto34;
+    private int numQuedadas;
 
     private HiloConexion() {
     }
@@ -75,7 +77,27 @@ public class HiloConexion extends Thread {
 
                             System.out.println("conexion está conectada");
                             hilo = HiloServerMain.init(conexionInfo, conexionRespuesta, new ServerRepeaterInterface() {
-                                //Repercutir las acciones al resto de usuarios
+                                @Override
+                                public void repercutirMensaje(String quedada) {
+                                    PrintWriter s;
+                                    System.out.println("Quedada en repercutir mensaje==>" + quedada);
+                                    System.out.println(usuariosConectados.size());
+                                    for (int i = 0; i < usuariosConectados.size(); i++) {
+                                        if (finalizar == true) {
+                                            usuariosConectados.get(i).getEntradaInfo().close();
+                                            usuariosConectados.get(i).getEntradaRespuesta().close();
+                                            usuariosConectados.get(i).getSalidaInfo().close();
+                                            usuariosConectados.get(i).getSalidaRespuesta().close();
+
+                                        } else {
+                                            System.out.println("Entro en repercutir mensaje else");
+                                            System.out.println(quedada);
+                                            s = usuariosConectados.get(i).getSalidaRespuesta();
+                                            s.print("quedada#" + quedada + "\r\n");
+                                            s.flush();
+                                        }
+                                    }
+                                }
                             });
                             usuariosConectados.add(hilo);
                             hilo.start();

@@ -156,6 +156,9 @@ public class HiloServerMain extends Thread {
             case "actualiza":
                 actualiza(comandoTroceado[1]);
                 break;
+            case "quedada":
+                quedada(comandoTroceado[1]);
+                break;
             //AQUI SEGURAMENTE AÑADIR MÁS
 
             default:
@@ -302,9 +305,16 @@ public class HiloServerMain extends Thread {
     }
 
     private void actualiza(String usuario) {
-        System.out.println("Dentro de actualiza==>"+usuario);
+        System.out.println("Dentro de actualiza==>" + usuario);
         ControllerUsuario cntr = new ControllerUsuario();
         cntr.actualizar(usuario);
+    }
+
+    private void quedada(String quedada) {
+        if (repeater != null) {
+            repeater.repercutirMensaje(quedada);
+
+        }
     }
 
 }

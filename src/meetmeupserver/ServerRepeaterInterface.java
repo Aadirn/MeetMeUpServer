@@ -10,7 +10,7 @@ package meetmeupserver;
  * @author dgall
  */
 public interface ServerRepeaterInterface {
-    
-    //HACER ALGO COMO CON LO DE LLEGARMENSAJE QUE REPERCUTA LOS CAMBIOS AL RESTO DE USUARIOS QUE HAYA CONECTADOS
-    
+
+    void repercutirMensaje(String quedada);
+
 }
