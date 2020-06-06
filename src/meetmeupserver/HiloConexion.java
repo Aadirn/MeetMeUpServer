@@ -49,7 +49,7 @@ public class HiloConexion extends Thread {
     }
 
     private void conectar() {
-
+        numQuedadas = 0;
         int puerto33Int;
         int puerto34Int;
 
@@ -76,9 +76,10 @@ public class HiloConexion extends Thread {
                         if (conexionInfo.isConnected() && conexionRespuesta.isConnected()) {
 
                             System.out.println("conexion está conectada");
-                            hilo = HiloServerMain.init(conexionInfo, conexionRespuesta, new ServerRepeaterInterface() {
+                            hilo = new HiloServerMain(conexionInfo, conexionRespuesta, new ServerRepeaterInterface() {
                                 @Override
-                                public void repercutirMensaje(String quedada) {
+                                public void repercutirMensajeQuedada(String quedada) {
+                                    numQuedadas++;
                                     PrintWriter s;
                                     System.out.println("Quedada en repercutir mensaje==>" + quedada);
                                     System.out.println(usuariosConectados.size());
@@ -93,7 +94,29 @@ public class HiloConexion extends Thread {
                                             System.out.println("Entro en repercutir mensaje else");
                                             System.out.println(quedada);
                                             s = usuariosConectados.get(i).getSalidaRespuesta();
-                                            s.print("quedada#" + quedada + "\r\n");
+                                            s.print("quedada#" + quedada + "=" + numQuedadas + "\r\n");
+                                            s.flush();
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void repercutirUnionQuedada(String unirse) {
+                                    PrintWriter s;
+                                    System.out.println("Unirse en repercutir mensaje==>" + unirse);
+                                    System.out.println(usuariosConectados.size());
+                                    for (int i = 0; i < usuariosConectados.size(); i++) {
+                                        if (finalizar == true) {
+                                            usuariosConectados.get(i).getEntradaInfo().close();
+                                            usuariosConectados.get(i).getEntradaRespuesta().close();
+                                            usuariosConectados.get(i).getSalidaInfo().close();
+                                            usuariosConectados.get(i).getSalidaRespuesta().close();
+
+                                        } else {
+                                            System.out.println("Entro en repercutir mensaje else");
+                                            System.out.println(unirse);
+                                            s = usuariosConectados.get(i).getSalidaRespuesta();
+                                            s.print("unirse#" + unirse + "\r\n");
                                             s.flush();
                                         }
                                     }

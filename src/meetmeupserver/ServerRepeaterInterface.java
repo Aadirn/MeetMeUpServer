@@ -11,6 +11,8 @@ package meetmeupserver;
  */
 public interface ServerRepeaterInterface {
 
-    void repercutirMensaje(String quedada);
+    void repercutirMensajeQuedada(String quedada);
+    
+    void repercutirUnionQuedada(String quedada);
 
 }

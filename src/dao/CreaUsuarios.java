@@ -41,15 +41,15 @@ public class CreaUsuarios implements CreaUsuariosI {
     public UsuarioNoThread registrarToObj(String comando) {
         //nick_usuario,password_usuario,nombre_usuario,apellido1_usuario,apellido2_usuario,fecha_nacimiento_usuario
         String[] datosUsuario;
-        datosUsuario = comando.split("&");
+        datosUsuario = comando.split("#");
         //nickname, nombre, apellido1, apellido2, fechaNacimiento, encriptar(contrasena)
-        nickname = datosUsuario[1];
-        contrasena = datosUsuario[6];
+        nickname = datosUsuario[0];
+        contrasena = datosUsuario[5];
         System.out.println(contrasena);
-        nombre = datosUsuario[2];
-        apellido1 = datosUsuario[3];
-        apellido2 = datosUsuario[4];
-        fechaNacimiento = u.fechaACAlendarCorrecta(datosUsuario[5]);
+        nombre = datosUsuario[1];
+        apellido1 = datosUsuario[2];
+        apellido2 = datosUsuario[3];
+        fechaNacimiento = u.fechaACAlendarCorrecta(datosUsuario[4]);
         if (comprobarUsuarioRepetido(nickname)) {
             return null;
         }

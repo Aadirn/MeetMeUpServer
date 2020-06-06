@@ -23,8 +23,7 @@ import java.util.logging.Logger;
  * @author dgall
  */
 public class HiloServerMain extends Thread {
-
-    private static final HiloServerMain instancia = new HiloServerMain();
+    
     private ServerRepeaterInterface repeater;
     private boolean salir = true;
     private String comandoInfo;
@@ -35,99 +34,112 @@ public class HiloServerMain extends Thread {
     private PrintWriter salidaInfo;
     private PrintWriter salidaRespuesta;
     private Connection conn;
-
-    private HiloServerMain() {
+    private String nickUsuario;
+    private int idUsuario;
+    
+    public HiloServerMain() {
     }
-
-    public static HiloServerMain init() {
-        return instancia;
+    
+    public HiloServerMain(Socket conexion33Info, Socket conexion34Respuesta, ServerRepeaterInterface repeater) {
+        this.conexion33Info = conexion33Info;
+        this.conexion34Respuesta = conexion34Respuesta;
+        this.repeater = repeater;
     }
-
-    public static HiloServerMain init(Socket conexion33Info, Socket conexion34Respuesta, ServerRepeaterInterface repeater) {
-        instancia.conexion33Info = conexion33Info;
-        instancia.conexion34Respuesta = conexion34Respuesta;
-        instancia.repeater = repeater;
-        return instancia;
-    }
-
+    
     @Override
     public void run() {
         do {
             try {
                 entradaInfo = new Scanner(conexion33Info.getInputStream());
                 entradaRespuesta = new Scanner(conexion34Respuesta.getInputStream());
-
+                
                 salidaInfo = new PrintWriter(conexion33Info.getOutputStream());
                 salidaRespuesta = new PrintWriter(conexion34Respuesta.getOutputStream());
-
+                
                 System.out.println("Antes de entrar al metodo captar mensaje");
                 salidaInfo.flush();
                 salidaRespuesta.flush();
-
+                
                 captarMensaje();
             } catch (IOException ex) {
                 System.err.println("Fallo al obtener puntos de E/S: " + ex.getMessage());
             }
-
+            
         } while (salir);
     }
-
+    
+    public String getNickUsuario() {
+        return nickUsuario;
+    }
+    
+    public void setNickUsuario(String nickUsuario) {
+        this.nickUsuario = nickUsuario;
+    }
+    
+    public int getIdUsuario() {
+        return idUsuario;
+    }
+    
+    public void setIdUsuario(int idUsuario) {
+        this.idUsuario = idUsuario;
+    }
+    
     public boolean isSalir() {
         return salir;
     }
-
+    
     public void setSalir(boolean salir) {
         this.salir = salir;
     }
-
+    
     public Socket getConexion33Info() {
         return conexion33Info;
     }
-
+    
     public void setConexion33Info(Socket conexion33Info) {
         this.conexion33Info = conexion33Info;
     }
-
+    
     public Socket getConexion34Respuesta() {
         return conexion34Respuesta;
     }
-
+    
     public void setConexion34Respuesta(Socket conexion34Respuesta) {
         this.conexion34Respuesta = conexion34Respuesta;
     }
-
+    
     public Scanner getEntradaInfo() {
         return entradaInfo;
     }
-
+    
     public void setEntradaInfo(Scanner entradaInfo) {
         this.entradaInfo = entradaInfo;
     }
-
+    
     public Scanner getEntradaRespuesta() {
         return entradaRespuesta;
     }
-
+    
     public void setEntradaRespuesta(Scanner entradaRespuesta) {
         this.entradaRespuesta = entradaRespuesta;
     }
-
+    
     public PrintWriter getSalidaInfo() {
         return salidaInfo;
     }
-
+    
     public void setSalidaInfo(PrintWriter salidaInfo) {
         this.salidaInfo = salidaInfo;
     }
-
+    
     public PrintWriter getSalidaRespuesta() {
         return salidaRespuesta;
     }
-
+    
     public void setSalidaRespuesta(PrintWriter salidaRespuesta) {
         this.salidaRespuesta = salidaRespuesta;
     }
-
+    
     private void captarMensaje() { //CAMBIAR TOdo LO MÁS SEGURO
         String[] comandoTroceado;
         String orden;
@@ -145,9 +157,9 @@ public class HiloServerMain extends Thread {
         switch (orden) {
             case "login":
                 System.out.println("Dentro de login\n");
-
+                
                 login(comandoTroceado[1], comandoTroceado[2]);
-
+                
                 break;
             case "crear":
                 System.out.println("Dentro crear");
@@ -159,6 +171,9 @@ public class HiloServerMain extends Thread {
             case "quedada":
                 quedada(comandoTroceado[1]);
                 break;
+            case "unirse":
+                unirseQuedada(comandoTroceado[1]);
+                break;
             //AQUI SEGURAMENTE AÑADIR MÁS
 
             default:
@@ -168,7 +183,7 @@ public class HiloServerMain extends Thread {
         //System.out.println("Conexion no conectada, ekisde");
         //}
     }
-
+    
     private void login(String nick, String pass) {
         System.out.println("Dentro de metodo login\n");
         System.out.println(nick + "//" + pass + "\n");
@@ -186,19 +201,19 @@ public class HiloServerMain extends Thread {
         String vecesValorado;
         String valoracion;
         String biografia;
-
+        
         String sql = "SELECT id_usuario,nick_usuario,AES_DECRYPT(password_usuario, 'admin'),nombre_usuario, apellido1_usuario, apellido2_usuario, fecha_creacion_usuario,fecha_nacimiento_usuario,usuarios_seguidos,num_usuarios_seguidos, valoracion_total, veces_valorado,biografia from usuarios WHERE nick_usuario='" + nick + "'";
         try {
-
+            
             initDb();
             try (PreparedStatement usuario = conn.prepareStatement(sql);) {
-
+                
                 ResultSet rs = usuario.executeQuery();
                 //while (rs.next()) {
                 //System.out.println(rs.getString("nick_usuario"));
                 if (rs.next()) {
                     System.out.println("Login Correcto\n");
-
+                    
                     id = rs.getString("id_usuario");
                     nickComprobar = rs.getString("nick_usuario");
                     passComprobar = rs.getString("AES_DECRYPT(password_usuario, 'admin')");
@@ -213,7 +228,7 @@ public class HiloServerMain extends Thread {
                     vecesValorado = compruebaSiNull(rs.getString("veces_valorado"));
                     valoracion = calcularValoracion(valoracionTotal, vecesValorado);
                     biografia = rs.getString("biografia");
-
+                    
                     if (!pass.equals(passComprobar)) {
                         System.out.println("Login fallido no coincide la contraseña\n");
                         conn.close();
@@ -226,7 +241,9 @@ public class HiloServerMain extends Thread {
                     salidaRespuesta.print("login#true#" + respuesta + "\r\n");
                     salidaRespuesta.flush();
                     conn.close();
-
+                    idUsuario = Integer.parseInt(id);
+                    nickUsuario = nickComprobar;
+                    
                 } else {
                     System.out.println("Login Fallido no existe usuario\n");
                     //Enviar Confirmacion de login
@@ -235,16 +252,16 @@ public class HiloServerMain extends Thread {
                     salidaRespuesta.flush();
                 }
             }
-
+            
         } catch (SQLException ex) {
             Logger.getLogger(HiloServerMain.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+    
     private void initDb() throws SQLException {
         conn = DriverManager.getConnection("jdbc:mysql://localhost/meetmeup", "root", "1234");
     }
-
+    
     private void crear(String usuario) { //Devolver respuesta de creacion correcta
         System.out.println(usuario);
         ControllerUsuario cntr = new ControllerUsuario();
@@ -253,15 +270,16 @@ public class HiloServerMain extends Thread {
         String booleano = division[0];
         if (booleano.equals("true")) {
             String id = obtenerIdBd(division[1]);
+            idUsuario = Integer.parseInt(id);
             salidaRespuesta.print("crea#true#" + id + "\r\n");
             salidaRespuesta.flush();
         } else {
             salidaRespuesta.print("crea#false#null\r\n");
             salidaRespuesta.flush();
         }
-
+        
     }
-
+    
     private String calcularValoracion(String valoracionTotal, String vecesValorado) {
         System.out.println("Calcula Valoracion-->" + valoracionTotal);
         if ("0".equals(valoracionTotal) && "0".equals(vecesValorado)) {
@@ -270,15 +288,15 @@ public class HiloServerMain extends Thread {
         }
         float valoracionTotalFloat = Float.parseFloat(valoracionTotal);
         float vecesValoradoFloat = Float.parseFloat(vecesValorado);
-
+        
         float valoracion = valoracionTotalFloat / vecesValoradoFloat;
         String valoracionString = valoracion + "";
         System.out.println(valoracionString + "\n");
-
+        
         return valoracionString;
-
+        
     }
-
+    
     private String compruebaSiNull(String comprobarNull) {
         if (comprobarNull == null) {
             System.out.println("Esnull\n");
@@ -286,7 +304,7 @@ public class HiloServerMain extends Thread {
         }
         return comprobarNull;
     }
-
+    
     private String obtenerIdBd(String nickname) {
         String id = null;
         try {
@@ -297,24 +315,31 @@ public class HiloServerMain extends Thread {
             while (rs.next()) {
                 id = rs.getString("id_usuario");
             }
-
+            
         } catch (SQLException ex) {
             Logger.getLogger(HiloServerMain.class.getName()).log(Level.SEVERE, null, ex);
         }
         return id;
     }
-
+    
     private void actualiza(String usuario) {
         System.out.println("Dentro de actualiza==>" + usuario);
         ControllerUsuario cntr = new ControllerUsuario();
         cntr.actualizar(usuario);
     }
-
+    
     private void quedada(String quedada) {
         if (repeater != null) {
-            repeater.repercutirMensaje(quedada);
-
+            repeater.repercutirMensajeQuedada(quedada);
+            
         }
     }
-
+    
+    private void unirseQuedada(String nickEIds) {
+        if (repeater != null) {
+            repeater.repercutirUnionQuedada(nickEIds);
+            
+        }
+    }
+    
 }
